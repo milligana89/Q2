@@ -120,7 +120,7 @@ stages:
 - stage: Test
   displayName: Test
   dependsOn: Build
-  condition: successful 
+  condition: succeeded('Build')
   jobs:
     - job: Test
       steps:
@@ -133,8 +133,9 @@ stages:
             projects: '**/*.SampleWebAPITests.csproj'
 
 - stage: Deploy
-  dependsOn: Test
   displayName: Deploy
+  dependsOn: Test
+  condition: succeeded('Test')
   jobs:
     - job: Deploy
       steps:
