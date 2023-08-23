@@ -1,0 +1,34 @@
+----------------- The Technologies -----------------
+* Udemy
+Used some basic high-level tutorials to understand some terraform basics. 
+
+* Terraform
+First terraform deep-dive. Previously, any work I had done with terraform was modifying an existing stage/resource, nothing from the ground up. I quickly learned how powerful terraform was. 
+I appreciated the level of documentation on the terraform registry. One thing I previously didn't understand and spent a while trying to understand was how the different terraform components 
+"talked" to each other. ie, how one terraform file like variable.tf could be used in main.tf without some sort of reference/import. It was interesting 
+to learn how all the tf components are compiled together. 
+
+* Azure Devops/Pipelines
+I wanted to use Azure as opposed to AWS as this position is on the Azure team, and I wanted to see if it was something I was able to pick up on. While the learning curve for any CSP 
+steep, I actually found Azure to be well-documented and very easy to onboard to. I started out by taking some time to navigate around Azure Devops. To get a feel for the platform, I 
+created the resources I would need for the pipeline using the UI instead of terraform, deleting them afterward.
+
+* Github 
+I used a github repository only because it was the VCS I was most familiar with - I actually did not realize that Azure Devops offered a repo. Even so, I'm not sure it would be streamlined 
+or simplified at all to use an "Azure-suite" product. The integration between Azure Devops and github was seamless.
+
+
+----------------- Issues and rabbit-trails -----------------
+
+The biggest rabbit trail I went down could have been prevented by better planning on my end :)
+When I forked the repo, I briefly looked at the code - basically enough to see the overall structure, and nothing more. I then dove right into a plan and learning activies, and tried to get
+started on the pipeline quickly. I didn't try to build the project locally first, thinking it would be as simple as the project structure. I didn't notice there was a build issue until I created 
+a service account and tried to build and deploy the application on Azure. When that failed with some strange errors, I tried to build it locally, finding a problem with a local build as well. Being 
+fairly unfamilair with the .Net stack, I spent some time researching the issues, which I ended up determining was a problem with my installations. I tried to repair my installer, and when that didn't work, 
+uninstalled everything and re-installed it. When that still didn't work, I decided to get back to the pipeline, hoping I could debug from there. I finally determined I would continue working on the 
+pipeline and test the build from there. Should have built it locally imeediately after cloning the repo and identified any problems there.
+**TODO: Update once local build works
+
+The second issue I faced was an error on the first step of the pipeline: ##[error]No hosted parallelism has been purchased or granted. To request a free parallelism grant, please fill out the following form https://aka.ms/azpipelines-parallelism-request
+I requested the grant on the given form but still haven't received that grant. Im also trying to undertsand the parellelism - I have only the single job. 
+--TODO: update - I did find a potential work-around by modifying the agent pools that I will try in the meantime
