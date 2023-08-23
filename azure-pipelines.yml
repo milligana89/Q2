@@ -1,19 +1,163 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# CI/CD Pipeline for Q2 SampleWebAPI
 
-trigger:none
+trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: windows-latest
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+variables:
+  BuildConfiguration: release
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+stages:
+- stage: terraform_validate
+  displayName: Prepare Terraform and Validate Code
+  jobs:
+  - job:
+    steps:
+    - task: TerraformInstaller@0
+      inputs:
+        terraformVersion: 'latest'
+    - task: TerraformCLI@0
+      inputs:
+        command: 'init'
+        commandOptions: '-var-file="main.tf"'
+        backendType: 'azurerm'
+        backendServiceArm: 'Azure subscription 1(507f588f-5740-4e72-a00b-2a7538f7e2be)'
+        ensureBackend: true
+        backendAzureRmResourceGroupName: 'rg_sample_api_useast1'
+        backendAzureRmResourceGroupLocation: 'useast'
+        backendAzureRmStorageAccountName: 'stgacct'
+        backendAzureRmContainerName: 'tfstate'
+        backendAzureRmKey: 'dev-tfstate'
+        allowTelemetryCollection: true
+    - task: TerraformCLI@0
+      inputs:
+        command: 'validate'
+        allowTelemetryCollection: true
+
+- stage: terraform_plan
+  dependsOn: terraform_validate
+  condition: succeeded('terraform_validate')
+  displayName: Plan
+  jobs:
+    - job:
+      steps:
+      - task: TerraformInstaller@0
+        inputs:
+          terraformVersion: 'latest'
+      - task: TerraformCLI@0
+        inputs:
+          command: 'init'
+          commandOptions: '-var-file="main.tf"'
+          backendType: 'azurerm'
+          backendServiceArm: 'Azure subscription 1(507f588f-5740-4e72-a00b-2a7538f7e2be)'
+          ensureBackend: true
+          backendAzureRmResourceGroupName: 'rg_sample_api_useast1'
+          backendAzureRmResourceGroupLocation: 'useast'
+          backendAzureRmStorageAccountName: 'stgacct'
+          backendAzureRmContainerName: 'tfstate'
+          backendAzureRmKey: 'dev-tfstate'
+          allowTelemetryCollection: true
+      - task: TerraformCLI@0
+        inputs:
+          command: 'plan'
+          runAzLogin: true
+          allowTelemetryCollection: true
+          
+
+- stage: terraform_apply
+  dependsOn: terraform_plan
+  condition: succeeded('terraform_plan')
+  displayName: TF Apply
+  jobs:
+    - job:
+      steps:
+      - task: TerraformInstaller@0
+        inputs:
+          terraformVersion: 'latest'
+      - task: TerraformCLI@0
+        inputs:
+          command: 'init'
+          commandOptions: '-var-file="main.tf"'
+          backendType: 'azurerm'
+          backendServiceArm: 'Azure subscription 1(507f588f-5740-4e72-a00b-2a7538f7e2be)'
+          ensureBackend: true
+          backendAzureRmResourceGroupName: 'rg_sample_api_useast1'
+          backendAzureRmResourceGroupLocation: 'useast'
+          backendAzureRmStorageAccountName: 'stgacct'
+          backendAzureRmContainerName: 'tfstate'
+          backendAzureRmKey: 'dev-tfstate'
+          allowTelemetryCollection: true         
+      - task: TerraformCLI@0
+        inputs:
+          command: 'apply'
+          allowTelemetryCollection: true
+
+- stage: Build
+  displayName: Build
+  jobs:
+    - job: build     
+      steps:
+      - task: UseDotNet@2
+        inputs:
+          version: '7.x'
+        
+      - task: DotNetCoreCLI@2
+        displayName: Build
+        inputs:
+          command: build
+          projects: '**/*.csproj'
+          arguments: '--configuration $(BuildConfiguration)' 
+  
+      - task: PublishBuildArtifacts@1
+        displayName: Publish Artifacts
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'WebApp'
+          publishLocation: 'Container'
+
+- stage: Test
+  displayName: Test
+  dependsOn: Build
+  jobs:
+    - job: Test
+      steps:
+        - task: DotNetCoreCLI@2
+          displayName: Unit Tests
+          inputs:
+            command: 'test'
+            arguments: '--no-build --configuration $(buildConfiguration)'
+            publishTestResults: true
+            projects: '**/*.SampleWebAPITests.csproj'
+
+- stage: Deploy
+  dependsOn: Test
+  displayName: Deploy
+  jobs:
+    - job: Deploy
+      steps:
+      
+      - task: AzureRmWebAppDeployment@4
+        inputs:
+          ConnectionType: 'AzureRM'
+          azureSubscription: 'Azure subscription 1(507f588f-5740-4e72-a00b-2a7538f7e2be)'
+          appType: 'webApp'
+          WebAppName: 'SampleWebAPIQ2'
+          packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'specific'
+          itemPattern: '**WebApp'
+          downloadPath: '$(System.ArtifactsDirectory)'
+
+
+
+      
+        
+
+      
+      
+    
+        
