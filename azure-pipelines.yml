@@ -120,6 +120,7 @@ stages:
 - stage: Test
   displayName: Test
   dependsOn: Build
+  condition: successful 
   jobs:
     - job: Test
       steps:
