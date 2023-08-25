@@ -13,6 +13,11 @@ I wanted to use Azure as opposed to AWS as this position is on the Azure team, a
 steep, I actually found Azure to be well-documented and very easy to onboard to. I started out by navigating around Azure Devops. To get a feel for the platform, I 
 created the resources I would need for the pipeline using the UI instead of terraform, deleting them afterward.
 
+* Azure Pipelines Terraform Tasks" extension
+I used this extension because I thought from the documentation it would expedite the building of my pipeline. I found myself focusing more on the nuances of the extension. 
+In some ways it definitely helped, and if I was more familiar with the underlying process I think it would be a great tool. Often, tehcnologies used to make things easier/more accessible can actually 
+be obfuscating when you are in the process of learning the base technology in general. I plan to re-build the pipeline with more terraform HCL and less shortcuts and see if I'm able to improve the process.
+
 * Github 
 I used a github repository only because it was the VCS I was most familiar with - I actually did not realize that Azure Devops offered a repo. Even so, I'm not sure it would be streamlined 
 or simplified at all to use an "Azure-suite" product. The integration between Azure Devops and github was seamless.
@@ -30,5 +35,7 @@ pipeline and test the build from there. Should have built it locally imediately 
 **TODO: Update once local build works
 
 The second issue I faced was an error on the first step of the pipeline: ##[error]No hosted parallelism has been purchased or granted. To request a free parallelism grant, please fill out the following form https://aka.ms/azpipelines-parallelism-request
-I requested the grant on the given form but still haven't received that grant. Im also trying to undertsand the parellelism - I have only the single job. 
---TODO: update - I did find a potential work-around by modifying the agent pools that I will try 
+Azure provided me the grant and I was able to run the job.
+
+Github:
+https://github.com/milligana89/Q2 - branch solution_1.0
