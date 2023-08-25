@@ -1,6 +1,6 @@
 terraform {
   backend "azurerm" {
-    resource_group_name  = "rg-stg-acct"
+    resource_group_name  = "rg-sample-api"
     storage_account_name = "stgacct"
     container_name       = "tfstate"
     key                  = "dev-tfstate"
