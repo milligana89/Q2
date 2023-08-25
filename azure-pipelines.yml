@@ -25,7 +25,7 @@ stages:
         backendType: 'azurerm'
         backendServiceArm: 'Azure subscription 1(507f588f-5740-4e72-a00b-2a7538f7e2be)'
         ensureBackend: true
-        backendAzureRmResourceGroupName: 'rg-sample-api'
+        backendAzureRmResourceGroupName: 'rg-stg-acct'
         backendAzureRmResourceGroupLocation: 'eastus'
         backendAzureRmStorageAccountName: 'stgacct'
         backendAzureRmContainerName: 'tfstate'
@@ -53,7 +53,7 @@ stages:
           backendType: 'azurerm'
           backendServiceArm: 'Azure subscription 1(507f588f-5740-4e72-a00b-2a7538f7e2be)'
           ensureBackend: true
-          backendAzureRmResourceGroupName: 'rg-sample-api'
+          backendAzureRmResourceGroupName: 'rg-stg-acct'
           backendAzureRmResourceGroupLocation: 'eastus'
           backendAzureRmStorageAccountName: 'stgacct'
           backendAzureRmContainerName: 'tfstate'
@@ -83,7 +83,7 @@ stages:
           backendType: 'azurerm'
           backendServiceArm: 'Azure subscription 1(507f588f-5740-4e72-a00b-2a7538f7e2be)'
           ensureBackend: true
-          backendAzureRmResourceGroupName: 'rg-sample-api'
+          backendAzureRmResourceGroupName: 'rg-stg-acct'
           backendAzureRmResourceGroupLocation: 'eastus'
           backendAzureRmStorageAccountName: 'stgacct'
           backendAzureRmContainerName: 'tfstate'
